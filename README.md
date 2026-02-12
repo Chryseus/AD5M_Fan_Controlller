@@ -30,6 +30,8 @@ For the exhaust duct I have used [this](https://www.printables.com/model/1375541
 
 - [x] Sensor display
 
+- [ ] Schematic
+
 - [ ] 3D printed mounting parts
 
 - [ ] Automatic mode based on sensor data
