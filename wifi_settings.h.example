@@ -1,0 +1,2 @@
+const char* SSID = "YOUR_SSID";
+const char* WPA_KEY = "WPA";
