@@ -20,9 +20,9 @@ Power is drawn from the built in 24V supply and regulated down to 5V for the ESP
 
 ## 3D Printed Parts
 
-For the recirculation duct [this]([Flashforge Adventurer 5M Recirculating Air Duct - 5015 Fan Mount by Jwidess | Download free STL model | Printables.com](https://www.printables.com/model/1243577-flashforge-adventurer-5m-recirculating-air-duct-50)) is used for the AD5M, for AD5X users [this]([AD5X internal circulation air filtration duct with fan speed control by Dzung Vu | Download free STL model | Printables.com](https://www.printables.com/model/1473971-ad5x-internal-circulation-air-filtration-duct-with)) or [this]([AD5X Recirculation Duct + Blower 5015 by Joel Whitington | Download free STL model | Printables.com](https://www.printables.com/model/1472826-ad5x-recirculation-duct-blower-5015)) may work.
+For the recirculation duct [this](https://www.printables.com/model/1243577-flashforge-adventurer-5m-recirculating-air-duct-50) is used for the AD5M, for AD5X users [this](https://www.printables.com/model/1473971-ad5x-internal-circulation-air-filtration-duct-with) or [this](https://www.printables.com/model/1472826-ad5x-recirculation-duct-blower-5015) may work.
 
-For the exhaust duct I have used [this]([Adventurer 5M venting kit (for the non-Pro version). Easily vent to a 1.5＂ hose. by SixHourPrints | Download free STL model | Printables.com](https://www.printables.com/model/1375541-adventurer-5m-venting-kit-for-the-non-pro-version)).
+For the exhaust duct I have used [this](https://www.printables.com/model/1375541-adventurer-5m-venting-kit-for-the-non-pro-version).
 
 ### Roadmap
 
