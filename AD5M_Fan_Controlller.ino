@@ -11,7 +11,7 @@
 #include "wifi_settings.h" // User WiFi settings
 
 #define NETWORK_PORT 8080
-const char* VERSION = "0.1"; // Firmware release version
+const char* VERSION = "0.2"; // Firmware release version
 
 /**** Pin Layout  ****/
 // 8 - I2C SDA
@@ -38,6 +38,8 @@ const int fan_exhaust_min = 0;
 
 
 // BME280 Temperature / Humidity / Pressure sensor
+bool bme280_detected = false;
+bool bmp280_detected = false;
 BME280I2C::Settings settings(
    BME280::OSR_X1, //temp
    BME280::OSR_X1, //humid
@@ -54,6 +56,7 @@ float pressure = 0.0; // hPa
 float humidity = 0.0; // RH %
 
 // ENS160 VOC Sensor
+bool ens160_detected = false;
 ScioSense_ENS160 ens160(ENS160_I2CADDR_1); // Change if needed, 0 = 0x52, 1 = 0x53
 int air_AQI = 0; // 1-5
 int air_TVOC = 0; // ppb
@@ -84,10 +87,10 @@ Content-Type: text/html
 <body>
 <div id="container">
 <h1>AD5M Ventilation Controller</h1>
-<h2>BME280 Sensor Data</h2>
 )";
 
-String http_footer = R"(</div>
+String http_footer = R"(<br><a href="https://github.com/Chryseus/AD5M_Fan_Controlller">Github</a>
+</div>
 </body>
 </html>
 
@@ -186,7 +189,6 @@ void send_webpage(WiFiClient &client) // Send webpage to client
 {
   if(client)
   {
-    // Serial.println("Client connected.");
     while (client.connected())
     {
       if (client.available())
@@ -199,42 +201,51 @@ void send_webpage(WiFiClient &client) // Send webpage to client
           process_form(c, client);
         }
 
-        client.println("<p>Temperature: " + String(temperature) + " C<br>");
-        client.println("Pressure: " + String(pressure) + " hPa<br>");
-        client.println("Humidity: " + String(humidity) + " %</p>");
+        if (bme280_detected && !bmp280_detected) {
+          client.println("<h2>BME280 Sensor Data</h2>");
+          client.println("<p>Temperature: " + String(temperature) + " C<br>");
+          client.println("Pressure: " + String(pressure) + " hPa<br>");
+          client.println("Humidity: " + String(humidity) + " %</p>");
+        }
+        else if (bme280_detected && bmp280_detected) {
+          client.println("<h2>BMP280 Sensor Data</h2>");
+          client.println("<p>Temperature: " + String(temperature) + " C<br>");
+          client.println("Pressure: " + String(pressure) + " hPa</p>");
+        }
 
-        client.println("<h2>ENS160 Sensor Data</h2>");
-        if (air_TVOC <= 200) {
-          client.println("<p><span class=safe>TVOC: " + String(air_TVOC) + " ppb</span><br>");
-        }
-        else if (air_TVOC > 200 && air_TVOC < 600) {
-          client.println("<p><span class=warn>TVOC: " + String(air_TVOC) + " ppb</span><br>");
-        }
-        else {
-          client.println("<p><span class=danger>TVOC: " + String(air_TVOC) + " ppb</span><br>");
+        if (ens160_detected) {
+          client.println("<h2>ENS160 Sensor Data</h2>");
+          if (air_TVOC <= 200) {
+            client.println("<p><span class=safe>TVOC: " + String(air_TVOC) + " ppb</span><br>");
+          }
+          else if (air_TVOC > 200 && air_TVOC < 600) {
+            client.println("<p><span class=warn>TVOC: " + String(air_TVOC) + " ppb</span><br>");
+          }
+          else {
+            client.println("<p><span class=danger>TVOC: " + String(air_TVOC) + " ppb</span><br>");
+          }
+          
+          if (air_eCO2 <= 800) {
+            client.println("<span class=safe>eCO2: " + String(air_eCO2) + " ppm</span><br>");
+          }
+          else if (air_eCO2 > 800 && air_eCO2 < 1500) {
+            client.println("<span class=warn>eCO2: " + String(air_eCO2) + " ppm</span><br>");
+          }
+          else {
+            client.println("<span class=danger>eCO2: " + String(air_eCO2) + " ppm</span><br>");
+          }
+          
+          if (air_AQI <= 2 ) {
+            client.println("<span class=safe>AQI: " + String(air_AQI) + "</span></p>");
+          }
+          else if (air_AQI > 2 && air_AQI <= 4) {
+            client.println("<span class=warn>AQI: " + String(air_AQI) + "</span></p>");
+          }
+          else {
+            client.println("<span class=danger>AQI: " + String(air_AQI) + "</span></p>");
+          }
         }
         
-        if (air_eCO2 <= 800) {
-          client.println("<span class=safe>eCO2: " + String(air_eCO2) + " ppm</span><br>");
-        }
-        else if (air_eCO2 > 800 && air_eCO2 < 1500) {
-           client.println("<span class=warn>eCO2: " + String(air_eCO2) + " ppm</span><br>");
-        }
-        else {
-          client.println("<span class=danger>eCO2: " + String(air_eCO2) + " ppm</span><br>");
-        }
-        
-        if (air_AQI <= 2 ) {
-          client.println("<span class=safe>AQI: " + String(air_AQI) + "</span></p>");
-        }
-        else if (air_AQI > 2 && air_AQI <= 4) {
-          client.println("<span class=warn>AQI: " + String(air_AQI) + "</span></p>");
-        }
-        else {
-          client.println("<span class=danger>AQI: " + String(air_AQI) + "</span></p>");
-        }
-        
-
         client.println("<h2>Settings</h2><form method=\"get\" action=\"\"><fieldset><legend>Mode</legend>");
         if(vc_settings.mode == 0) { client.println("<label for=\"auto\">Automatic</label><input type=\"radio\" id=\"auto\" name=\"mode\" value=\"1\" checked><label for=\"manual\">Manual Override</label><input type=\"radio\" id=\"manual\" name=\"mode\" value=\"0\">");}
         else { client.println("<label for=\"auto\">Automatic</label><input type=\"radio\" id=\"auto\" name=\"mode\" value=\"1\"><label for=\"manual\">Manual Override</label><input type=\"radio\" id=\"manual\" name=\"mode\" value=\"0\" checked>"); }
@@ -290,39 +301,50 @@ void setup() {
   EEPROM.begin(sizeof(vc_settings));
   check_eeprom();
 
-  while(!bme.begin())
+  if(!bme.begin())
   {
-    Serial.println("BME280 not found, will try again.");
-    delay(10000);
+    Serial.println("BME280 not found, some features may not be available.");
+  }
+  else
+  {
+    bme280_detected = true;
+    if (bme.chipModel() == BME280::ChipModel_BMP280)
+    { 
+      Serial.println("BMP280 detected, humidity reading will not be available.");
+      bmp280_detected = true;
+    }
   }
 
   ens160.begin();
   if (!ens160.available())
   {
-    Serial.println("ENS160 is not available, air quality readings will not be used.");
+    Serial.println("ENS160 is not available, some features may not be available.");
   }
   else
   {
     ens160.setMode(ENS160_OPMODE_STD);
+    ens160_detected = true;
   }
  
-
   connect_wifi();
   server.setTimeout(120);
   server.begin();
 }
 
 
-
 void loop() {
-  bme.read(pressure, temperature, humidity);
-  if (ens160.available())
+  if (bme280_detected && !bmp280_detected) { bme.read(pressure, temperature, humidity); }
+  else if (bme280_detected && bmp280_detected) { 
+    temperature = bme.temp();
+    pressure = bme.pres(); }
+  if (ens160_detected)
   {
     ens160.measure(false); // don't block
     air_AQI = ens160.getAQI();
     air_eCO2 = ens160.geteCO2();
     air_TVOC = ens160.getTVOC();
   }
+
   WiFiClient client = server.available();
   send_webpage(client);
 
