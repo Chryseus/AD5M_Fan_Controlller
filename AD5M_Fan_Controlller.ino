@@ -18,6 +18,12 @@ const char* VERSION = "0.2"; // Firmware release version
 // 9 - I2C SCL
 // 0 - PWM Recirculation Fan
 // 1 - PWM Exhaust Fan
+// 2 - TVOC High LED
+const int PIN_SDA = 8;
+const int PIN_SCL = 9;
+const int PIN_RECIRC = 0;
+const int PIN_EXHAUST = 1;
+const int PIN_TVOC = 2;
 
 struct VC_Settings
 {
@@ -34,7 +40,9 @@ NetworkServer server(NETWORK_PORT);
 
 // Fan Limits
 const int fan_recirc_min = 55;
-const int fan_exhaust_min = 0;
+const int fan_exhaust_min = 50;
+int fan_recirc_last = 0;
+int fan_exhaust_last = 0;
 
 
 // BME280 Temperature / Humidity / Pressure sensor
@@ -293,10 +301,11 @@ void setup() {
   Serial.println("AD5M fan controller and monitoring.");
   Serial.print("Version: ");
   Serial.println(VERSION);
-  pinMode(0, OUTPUT);
-  pinMode(1, OUTPUT);
-  analogWriteFrequency(0, 10e3);
-  analogWriteFrequency(1, 10e3);
+  pinMode(PIN_RECIRC, OUTPUT);
+  pinMode(PIN_RECIRC, OUTPUT);
+  pinMode(PIN_TVOC, OUTPUT);
+  analogWriteFrequency(0, 30e3);
+  analogWriteFrequency(1, 30e3);
   Wire.begin();
   EEPROM.begin(sizeof(vc_settings));
   check_eeprom();
@@ -353,17 +362,47 @@ void loop() {
   {
     float output = (vc_settings.fan_recirc_pwm / 100.0f) * 255.0f;
     int ioutput = (int)output;
-    analogWrite(0, ioutput);
+    if (fan_recirc_last == 0)
+    {
+      fan_recirc_last = vc_settings.fan_recirc_pwm;
+      analogWrite(PIN_RECIRC, 255);
+      delay(500);
+    }
+    analogWrite(PIN_RECIRC, ioutput);
   }
-  else { analogWrite(0, 0); }
+  else
+  {
+    analogWrite(PIN_RECIRC, 0);
+    fan_recirc_last = 0;  
+  }
   
   if (vc_settings.fan_exhaust_enable > 0)
   {
     float output2 = (vc_settings.fan_exhaust_pwm / 100.0f) * 255.0f;
     int ioutput2 = (int)output2;
-    analogWrite(0, ioutput2);
+    if (fan_exhaust_last == 0)
+    {
+      fan_exhaust_last = vc_settings.fan_exhaust_pwm;
+      analogWrite(PIN_EXHAUST, 255);
+      delay(500);
+    }
+    analogWrite(PIN_EXHAUST, ioutput2);
   }
-  else { analogWrite(1, 0); }
+  else 
+  {
+    analogWrite(PIN_EXHAUST, 0);
+    fan_exhaust_last = 0;
+  }
+
+  // TVOC LED
+  if (air_TVOC > 600)
+  {
+    digitalWrite(PIN_TVOC, HIGH);
+  }
+  else
+  {
+    digitalWrite(PIN_TVOC, LOW);
+  }
 
 // TODO add automatic control support
 
