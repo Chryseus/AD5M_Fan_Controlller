@@ -16,7 +16,7 @@ Recirculation fan is a 5015 blower, 24V 8500 RPM max.
 
 Exhaust fan is a 4020 24V.
 
-Power is drawn from the built in 24V supply and regulated down to 5V for the ESP32 using a 7805, the ESP32 3.3V regulator is used to power the sensors.
+Power is drawn from the built in 24V supply and regulated down to 5V for the ESP32 using a LMR14006Y buck converter (you could use a 7805 instead), the ESP32 3.3V regulator is used to power the sensors.
 
 ## 3D Printed Parts
 
@@ -44,4 +44,4 @@ For the exhaust duct I have used [this](https://www.printables.com/model/1375541
 
 - [ ] 3D printer communication
 
-- [ ] Custom PCB
+- [x] Custom PCB
