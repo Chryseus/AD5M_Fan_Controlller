@@ -1,0 +1,114 @@
+(footprint "SMNR4030"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 4 -0.1 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "1ba6e6d4-aae3-44dd-b513-398e0b959192")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "SMNR4030"
+		(at 0 3.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "82e96e5b-f8c2-46d0-bbfe-23c56984d445")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.lcsc.com/datasheet/C135271.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2f80062d-561b-46ef-b38e-a3bd4ba81dc2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f0330f0b-7b2d-45fd-ab6c-99552e6296f8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -1.9 0)
+		(end 1.7 0)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "94ded386-f6b3-4cd1-af57-6f19e255f164")
+	)
+	(fp_rect
+		(start -2.3 -2.2)
+		(end 2.1 2.2)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "6e213e10-b88f-4a7d-949c-c66d255f69da")
+	)
+	(fp_rect
+		(start -2.1 -2)
+		(end 1.9 2)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "a9a06902-bd2c-4102-841b-a56c66a7f3dc")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0.2 5.3 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "fb3f525f-9fb2-4a75-b690-9cb1b11932e2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd rect
+		(at -0.1 -1.5)
+		(size 3.7 1.1)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "53730e39-e0b7-4a1a-bdde-ffcaa66d6026")
+	)
+	(pad "2" smd rect
+		(at -0.1 1.5)
+		(size 3.7 1.1)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "5bb8cc2a-6a6b-45b3-8839-ba7f3c117f34")
+	)
+	(embedded_fonts no)
+)
