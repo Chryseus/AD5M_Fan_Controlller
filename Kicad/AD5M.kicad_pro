@@ -68,7 +68,7 @@
         "version": 2
       },
       "rule_severities": {
-        "annular_width": "warning",
+        "annular_width": "ignore",
         "clearance": "error",
         "connection_width": "warning",
         "copper_edge_clearance": "error",
@@ -486,7 +486,9 @@
   },
   "libraries": {
     "pinned_footprint_libs": [],
-    "pinned_symbol_libs": []
+    "pinned_symbol_libs": [
+      "Chryseus"
+    ]
   },
   "meta": {
     "filename": "AD5M.kicad_pro",
@@ -525,7 +527,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "C:/",
+      "plot": "/home/james/Gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -660,7 +662,7 @@
     },
     "net_format_name": "",
     "page_layout_descr_file": "",
-    "plot_directory": "C:/",
+    "plot_directory": "C:/Users/James/Desktop/",
     "space_save_all_events": true,
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",

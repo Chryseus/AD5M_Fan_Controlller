@@ -4,7 +4,7 @@
 ***********************************/
 
 #include <WiFi.h> // Arduino WiFi Library
-#include <BME280I2C.h> // BME280 Library
+#include <BME280I2C.h> // BME280 Library (Tyler Glenn)
 #include <ScioSense_ENS160.h> // ENS160 Adafruit library
 #include <Wire.h>
 #include <EEPROM.h>
